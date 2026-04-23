@@ -12,7 +12,7 @@ services:
       APP_USER: system
       APP_USER_PASSWORD: oracle
     healthcheck:
-      test: ["CMD", "bash", "-c", "echo 'select 1 from dual;' | sqlplus system/oracle@//host.docker.internal:1521/orclpdb"]
+      test: ["CMD", "bash", "-c", "echo 'select 1 from dual;' | sqlplus system/oracle@//localhost:1521/orclpdb"]
       interval: 30s
       timeout: 10s
       retries: 10
@@ -25,6 +25,22 @@ services:
     depends_on:
       - oracle
     environment:
-      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@//host.docker.internal:1521/orclpdb
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@//oracle:1521/orclpdb
       SPRING_DATASOURCE_USERNAME: system
       SPRING_DATASOURCE_PASSWORD: oracle
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
