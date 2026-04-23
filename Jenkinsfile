@@ -27,14 +27,16 @@ pipeline {
         stage('Check Docker') {
             steps {
                 echo 'Vérification Docker...'
-                sh 'docker -v'
+                sh '''
+                    docker -v || echo "Docker NON disponible dans Jenkins"
+                '''
             }
         }
 
         stage('Docker Build') {
             steps {
                 echo 'Build Docker image...'
-                sh 'docker build -t spring-app .'
+                sh 'docker build -t spring-app:latest .'
             }
         }
     }
