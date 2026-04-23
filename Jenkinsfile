@@ -34,7 +34,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Build Docker image...'
-                sh 'docker build -t spring-app:latest .'
+                sh 'docker build -t spring-app .'
             }
         }
     }
