@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+
+  oracle:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: oracle-db
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: oracle
+      APP_USER: system
+      APP_USER_PASSWORD: oracle
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo 'select 1 from dual;' | sqlplus system/oracle@//host.docker.internal:1521/orclpdb"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  app:
+    build: .
+    container_name: spring-app
+    ports:
+      - "8081:8081"
+    depends_on:
+      - oracle
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@//host.docker.internal:1521/orclpdb
+      SPRING_DATASOURCE_USERNAME: system
+      SPRING_DATASOURCE_PASSWORD: oracle
