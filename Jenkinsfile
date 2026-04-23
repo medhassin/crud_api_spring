@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = "spring-app:latest"
+    }
+
     stages {
 
         stage('Checkout') {
@@ -9,7 +13,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Maven') {
             steps {
                 echo 'Build en cours...'
                 sh 'chmod +x mvnw'
@@ -28,7 +32,10 @@ pipeline {
             steps {
                 echo 'Vérification Docker...'
                 sh '''
-                    docker -v || echo "Docker NON disponible dans Jenkins"
+                    if ! docker -v; then
+                        echo "❌ Docker NON disponible dans Jenkins"
+                        exit 1
+                    fi
                 '''
             }
         }
@@ -36,7 +43,18 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Build Docker image...'
-                sh 'docker build -t spring-app:latest .'
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage('Docker Run (test)') {
+            steps {
+                echo 'Lancement container test...'
+                sh '''
+                    docker stop spring-app || true
+                    docker rm spring-app || true
+                    docker run -d --name spring-app -p 8081:8081 $DOCKER_IMAGE
+                '''
             }
         }
     }
@@ -46,7 +64,7 @@ pipeline {
             echo 'Pipeline terminé avec succès 🎉'
         }
         failure {
-            echo 'Pipeline échoué ❌'
+            echo 'Pipeline échoué ❌ (vérifie Docker + Jenkins setup)'
         }
     }
 }
