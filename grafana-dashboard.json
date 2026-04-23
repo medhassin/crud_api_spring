@@ -1,0 +1,36 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "type": "graph",
+      "title": "CPU Usage",
+      "targets": [
+        {
+          "expr": "process_cpu_usage"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "JVM Memory",
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "HTTP Requests",
+      "targets": [
+        {
+          "expr": "http_server_requests_seconds_count"
+        }
+      ]
+    }
+  ],
+  "title": "Spring Boot Monitoring",
+  "version": 1
+}
