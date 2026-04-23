@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build') {
             steps {
                 echo 'Build en cours...'
@@ -12,16 +19,25 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Tests...'
-                sh 'mvn test'
+                echo 'Tests en cours...'
+                sh './mvnw test'
             }
         }
 
         stage('Docker Build') {
             steps {
-                echo 'Build Docker...'
-                sh 'docker build -t spring-app .'
+                echo 'Build Docker image...'
+                sh 'docker build -t spring-app:latest .'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline terminé avec succès 🎉'
+        }
+        failure {
+            echo 'Pipeline échoué ❌'
         }
     }
 }
