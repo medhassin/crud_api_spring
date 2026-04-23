@@ -18,7 +18,7 @@ services:
     depends_on:
       - oracle
     environment:
-      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@//oracle-db:1521/orclpdb
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@//oracle-db:1521/XEPDB1
       SPRING_DATASOURCE_USERNAME: system
       SPRING_DATASOURCE_PASSWORD: oracle
 
